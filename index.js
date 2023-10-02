@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import dotenv from 'dotenv'
 import cors from 'cors'
 import accessToken from "./services/accessToken.js";
+import {register, login} from "./controller/auth.js";
+import {loginUserValidation, registerUserValidation} from "./validations/validations.js";
+import validationResult from "./services/validationResult.js";
 
 const api = express()
 dotenv.config()  // Функция - для доступа к env файлам
@@ -20,6 +23,12 @@ mongoose.connect(process.env.MONGODB)
     .then(() => console.log('Mongo DB успешно запущен'))
     .catch((err) =>  console.log('Ошибка при запуске Mongo DB ' ,err))
 
+
+
+// auth
+
+api.post('/register', registerUserValidation, validationResult, register)
+api.post('/login', loginUserValidation,validationResult, login)
 
 const runServer = () => {
     try {
