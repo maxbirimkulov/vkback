@@ -2,7 +2,8 @@ import {body} from "express-validator";
 
 export const registerUserValidation = [
     body('email','Неверный формат почты').isEmail(),
-    body('image', 'Неверный путь').optional().isString(),
+    body('avatar', 'Неверный путь').optional().isString(),
+    body('images', 'Неверный формат картиной').optional().isArray(),
     body('name', 'Укажите ваше имя').isString(),
     body('surname', 'Укажите вашу фамилию').isString(),
     body('birthday', 'Укажите вашу дату рождения').optional().isDate(),

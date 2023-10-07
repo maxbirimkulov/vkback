@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import {sendActivationMail} from "../services/mail-service.js";
 import accessToken from "../services/accessToken.js";
+import { v4 as uuidv4 } from 'uuid';
 
 export const register = async (req, res) => {
     try {
@@ -21,14 +22,15 @@ export const register = async (req, res) => {
 
             const passwordHash = await bcryptPass(password)
 
-            const activateToken = jwt.sign({
-                email: user.email
-            }, 'secret123', {expiresIn: '1h'})
+            const activeLink = uuidv4()
 
            const doc = await UsersModel({
                ...user,
-               passwordHash
+               passwordHash,
+               activateLink: activeLink
            })
+
+            await sendActivationMail(user.email, `http://localhost:4444/active/${activeLink}`)
 
             const createdUser = await doc.save()
 
@@ -36,7 +38,7 @@ export const register = async (req, res) => {
 
 
 
-            const {passwordHash:_, ...userData} = createdUser._doc
+            const {passwordHash:_, activateLink, ...userData} = createdUser._doc
 
             res.json({
                 user: userData,
@@ -50,8 +52,6 @@ export const register = async (req, res) => {
         })
     }
 }
-
-
 
 export const login = async (req, res) => {
     try {

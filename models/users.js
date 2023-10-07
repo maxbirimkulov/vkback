@@ -6,7 +6,11 @@ const usersSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    image: String,
+    avatar: String,
+    images: {
+        type: Array,
+        default: []
+    },
     name: {
         type: String,
         required: true
@@ -23,6 +27,10 @@ const usersSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    phone: String,
+    birthday: Date,
+    activateLink: String,
+    resetLing: String
 
 }, {
     timestamps: true
