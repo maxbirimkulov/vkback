@@ -8,8 +8,8 @@ export const getAllUser = async (req, res) => {
 
         let users = await UsersModel.find(filter)
 
-        users = users.map(({avatar,name, surname,_id }) => {
-            return {avatar, name, surname,_id }
+        users = users.map(({avatar,name, surname,_id ,images}) => {
+            return {avatar, name, surname,_id, images }
         })
 
         res.json(users)
@@ -83,12 +83,23 @@ export const deleteOneUser = async (req, res) => {
 
 export const changeAvatarUrl = async (req, res) => {
 
-    const newAvatarUrl = req.body.avatar
+    try {
 
-    const chancedUser = await UsersModel.findByIdAndUpdate(req.params.id, {avatar: newAvatarUrl}, {returnDocument: "after"})
+        const newAvatarUrl = req.body.avatar
 
-    const {passwordHash:_,...userData} = chancedUser._doc
+        const chancedUser = await UsersModel.findByIdAndUpdate(req.params.id, {avatar: newAvatarUrl}, {returnDocument: "after"})
 
-    res.json(userData)
+        const {passwordHash:_,...userData} = chancedUser._doc
+
+        res.json(userData)
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({
+            message: 'Пользователь не найден'
+        })
+    }
+
+
 
 }
+

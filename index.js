@@ -2,16 +2,23 @@ import express from 'express'
 import mongoose from "mongoose";
 import dotenv from 'dotenv'
 import cors from 'cors'
-import accessToken from "./services/accessToken.js";
+
 import {register, login} from "./controller/auth.js";
 import {loginUserValidation, registerUserValidation} from "./validations/validations.js";
 import validationResult from "./services/validationResult.js";
 import activeUser from "./services/activeUser.js";
-import {changeAvatarUrl, changeOneUser, deleteOneUser, getAllUser, getOneUser} from "./controller/users.js";
+import {
+    changeAvatarUrl,
+    changeOneUser,
+    deleteOneUser,
+    getAllUser,
+    getOneUser
+} from "./controller/users.js";
 import checkAuth from "./services/checkAuth.js";
 import multer from 'multer'
 import uploudFile from "./services/uploudFile.js";
 import {v2 as cloudinary} from 'cloudinary';
+import {addImages, deleteImages, getAllImages, setLikeImage} from "./controller/images.js";
 
 const api = express()
 dotenv.config()  // Функция - для доступа к env файлам
@@ -64,6 +71,14 @@ api.get('/users/:id',  getOneUser)
 api.patch('/users/:id',  changeOneUser)
 api.patch('/users/avatar/:id',  changeAvatarUrl)
 api.delete('/users/:id',  deleteOneUser)
+
+
+//images
+
+api.get('/images', getAllImages)
+api.post('/images',  addImages)
+api.delete('/images/:id',  deleteImages)
+api.patch('/images/:id',  setLikeImage)
 
 const runServer = () => {
     try {
